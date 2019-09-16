@@ -1,16 +1,30 @@
-const express = require('express')
-const app = express()
-const port = 3001
+// content of index.js
+require('dotenv').config()
 
-// app.get('/', (req, res) => res.send('Hello World!'))
-app.get("/", (req, res, next) => {
-    res.json([
-        {"name":"Tony","gender":"Male"},
-        {"name":"Lisa","gender":"Female"},
-        {"name":"Michael","gender":"Male"},
-        {"name":"Ginger","gender":"Female"},
-        {"name":"Grace","gender":"Female"}]
-    );
-   });
+const http = require('http')
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+const hostname = process.env.HOST;
+const port = process.env.PORT;
+
+const server = http.createServer((req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(`{"message": "Hello World"}`);
+});
+
+process.env.NODE_ENV="development";
+
+if(process.env.NODE_ENV === "production")
+{
+    server.listen(port, hostname, () => {
+        console.log(`Production Server: running at http://${hostname}:${port}/`);
+    });
+
+}
+else if(process.env.NODE_ENV === "development")
+{
+    server.listen(port, hostname, () => {
+        console.log(`Production Server: running at http://${hostname}:${port}/`);
+    });
+
+}
