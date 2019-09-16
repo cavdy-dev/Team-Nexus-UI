@@ -1,6 +1,5 @@
 import http from 'http';
-
-const port = 8800;
+import { port } from '../config/config/config';
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
