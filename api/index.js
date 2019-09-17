@@ -1,9 +1,11 @@
 /* eslint-disable no-else-return */
 import http from 'http';
-import {
-  port
-} from '../config/config/config';
 import Helpers from '../config/helpers/helpers';
+import {
+  User
+} from '../../config/models';
+import bcrypt from 'bcrypt';
+
 // import db from '../config/models/index';
 /**
  * Middleware body parser
@@ -23,20 +25,32 @@ const collectRequestData = (request, callback) => {
   }
 }
 
-import { port } from '../config/config/config';
+import {
+  port
+} from '../config/config/config';
 import authValidation from './validations/authValidation';
 import authController from './controllers/authController';
 import checkIfExist from './helpers/checkIfExist';
 
-const { registerValidation } = authValidation;
-const { register } = authController;
-const { emailExist, usernameExist } = checkIfExist;
+const {
+  registerValidation
+} = authValidation;
+const {
+  register
+} = authController;
+const {
+  emailExist,
+  usernameExist
+} = checkIfExist;
 
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
-  const { url, method } = req;
+  const {
+    url,
+    method
+  } = req;
   if (url === '/') {
     /* istanbul ignore next */
     const welcomeMessage = {
@@ -64,16 +78,30 @@ const server = http.createServer((req, res) => {
         }
         return res.end(JSON.stringify(message));
       }
-      //find a user from db with the email if found 
-
+      
+      //find a user from db with the email if found
+     const response = User.findOne({
+        where: {
+          email: email  
+        }
+       })
+       if(!response){
+        const message = {
+                data: 'invalid credentials'
+              }
+              return res.end(JSON.stringify(message))
+       }else if(!bcrypt.compareSync(response.password,password)){
+        const message = {
+          data: 'invalid credentials'
+        }
+        return res.end(JSON.stringify(message))
+       }else{
+        const message = {
+          data: 'login successfull'
+        }
+        return res.end(JSON.stringify(message))
+       }
     })
-  } else if (url === '/register' && method === 'GET') {
-    const message = {
-      status: 200,
-      data: '/register Get endpoint reached'
-    }
-    /* istanbul ignore next */
-    return res.end(JSON.stringify(welcomeMessage));
   } else if (url === '/register' && method === 'POST') {
     res.setHeader('Content-Type', 'application/json');
     let body = '';
@@ -83,31 +111,46 @@ const server = http.createServer((req, res) => {
     /* istanbul ignore next */
     req.on('end', async () => {
       const result = registerValidation(body);
-      const { errors, newData } = result;
+      const {
+        errors,
+        newData
+      } = result;
       // Checks if error
       if (Object.keys(errors).length !== 0) {
         res.statusCode = 422;
-        const errorRes = { status: 422, data: errors };
+        const errorRes = {
+          status: 422,
+          data: errors
+        };
         return res.end(JSON.stringify(errorRes));
       }
       // Checks if email exist
       const emailError = await emailExist(newData);
       if (Object.keys(emailError).length !== 0) {
         res.statusCode = 409;
-        const errorRes = { status: 409, data: emailError };
+        const errorRes = {
+          status: 409,
+          data: emailError
+        };
         return res.end(JSON.stringify(errorRes));
       }
       // checks if username exist
       const usernameError = await usernameExist(newData);
       if (Object.keys(usernameError).length !== 0) {
         res.statusCode = 409;
-        const errorRes = { status: 409, data: usernameError };
+        const errorRes = {
+          status: 409,
+          data: usernameError
+        };
         return res.end(JSON.stringify(errorRes));
       }
 
       // Return response
       const response = await register(newData);
-      const rest = { status: 200, data: response };
+      const rest = {
+        status: 200,
+        data: response
+      };
       return res.end(JSON.stringify(rest));
     });
   } else {
