@@ -2,7 +2,8 @@ import http from 'http';
 import {
   port
 } from '../config/config/config';
-import db from '../config/models/index';
+import Helpers from '../config/helpers/helpers';
+// import db from '../config/models/index';
 
 
 /**
@@ -22,17 +23,15 @@ const collectRequestData = (request, callback) => {
     callback(null);
   }
 }
-/***
- * SQL connection
- */
-/**
- * Email checker
- * @params {string} email
- * @returns {Boolean} true or false
- */
-const isvalidEmail = (email) => {
-  return /\S+@\S+\.\S+/.test(email);
-}
+
+// /**
+//  * Email checker
+//  * @params {string} email
+//  * @returns {Boolean} true or false
+//  */
+// const isvalidEmail = (email) => {
+//   return /\S+@\S+\.\S+/.test(email);
+// }
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
@@ -69,7 +68,7 @@ const server = http.createServer((req, res) => {
         }
         return res.end(JSON.stringify(message));
       }
-      if (!isvalidEmail(email)) {
+      if (!Helpers.isvalidEmail(email)) {
         res.statusCode = 400;
         const message = {
           'data': 'please enter a valid email'
@@ -79,10 +78,12 @@ const server = http.createServer((req, res) => {
       /**
        * Suppose to insert into db and return user.     
        */
+      const hashPassword = Helpers.hashPassword(password)
       const userObject = {
         firstname,
         lastname,
-        email
+        email,
+        hashPassword
       }
       return res.end(JSON.stringify(userObject));
     });
@@ -99,7 +100,7 @@ const server = http.createServer((req, res) => {
         }
         return res.end(JSON.stringify(message));
       }
-      if(!isvalidEmail(email)){
+      if(!Helpers.isvalidEmail(email)){
         res.statusCode = 400;
         const message ={
         'data':'please enter a valid email'
