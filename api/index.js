@@ -68,7 +68,7 @@ const server = http.createServer((req, res) => {
         }
         return res.end(JSON.stringify(message));
       }
-      if (!Helpers.isvalidEmail(email)) {
+      if (!Helpers.isValidEmail(email)) {
         res.statusCode = 400;
         const message = {
           'data': 'please enter a valid email'
@@ -93,21 +93,21 @@ const server = http.createServer((req, res) => {
         email,
         password
       } = result;
-      if(!email || !password){
+      if (!email || !password) {
         res.statusCode = 400;
-        const message ={
-          'data':'some values are missing'
+        const message = {
+          'data': 'some values are missing'
         }
         return res.end(JSON.stringify(message));
       }
-      if(!Helpers.isvalidEmail(email)){
+      if (!Helpers.isValidEmail(email)) {
         res.statusCode = 400;
-        const message ={
-        'data':'please enter a valid email'
+        const message = {
+          'data': 'please enter a valid email'
         }
         return res.end(JSON.stringify(message));
       }
-    //find a user from db with the email if found 
+      //find a user from db with the email if found 
 
     })
   } else if (url === '/register' && method === 'GET') {
