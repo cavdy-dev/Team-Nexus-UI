@@ -8,20 +8,19 @@ import db from '../config/models/index';
 /**
  * Middleware body parser
  */
- const collectRequestData= (request, callback)=> {
-    const FORM_RAW= 'application/json';
-    if(request.headers['content-type'] === FORM_RAW) {
-        let body = '';
-        request.on('data', chunk => {
-            body += chunk.toString();
-        });
-        request.on('end', () => {
-            callback(JSON.parse(body));
-        });
-    }
-    else {
-        callback(null);
-    }
+const collectRequestData = (request, callback) => {
+  const FORM_RAW = 'application/json';
+  if (request.headers['content-type'] === FORM_RAW) {
+    let body = '';
+    request.on('data', chunk => {
+      body += chunk.toString();
+    });
+    request.on('end', () => {
+      callback(JSON.parse(body));
+    });
+  } else {
+    callback(null);
+  }
 }
 /***
  * SQL connection
@@ -31,7 +30,7 @@ import db from '../config/models/index';
  * @params {string} email
  * @returns {Boolean} true or false
  */
-const isvalidEmail=(email)=>{
+const isvalidEmail = (email) => {
   return /\S+@\S+\.\S+/.test(email);
 }
 
@@ -50,7 +49,12 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify(welcomeMessage));
   } else if (url === '/register' && method === 'POST') {
     collectRequestData(req, result => {
-     const {firstname,lastname,email,password} = result;
+      const {
+        firstname,
+        lastname,
+        email,
+        password
+      } = result;
       if (!firstname || !lastname || !email || !password) {
         res.statusCode = 400;
         const message = {
@@ -65,12 +69,12 @@ const server = http.createServer((req, res) => {
         }
         return res.end(JSON.stringify(message));
       }
-      if(!isvalidEmail(email)){
-      res.statusCode = 400;
-      const message = {
-        'data':'please enter a valid email'
-      }
-      return res.end(JSON.stringify(message));
+      if (!isvalidEmail(email)) {
+        res.statusCode = 400;
+        const message = {
+          'data': 'please enter a valid email'
+        }
+        return res.end(JSON.stringify(message));
       }
       /**
        * Suppose to insert into db and return user.     
@@ -80,13 +84,37 @@ const server = http.createServer((req, res) => {
         lastname,
         email
       }
-   return res.end(JSON.stringify(userObject));
-  });
+      return res.end(JSON.stringify(userObject));
+    });
+  } else if (url === '/login' && method === 'POST') {
+    collectRequestData(req, result => {
+      const {
+        email,
+        password
+      } = result;
+      if(!email || !password){
+        res.statusCode = 400;
+        const message ={
+          'data':'some values are missing'
+        }
+        return res.end(JSON.stringify(message));
+      }
+      if(!isvalidEmail(email)){
+        res.statusCode = 400;
+        const message ={
+        'data':'please enter a valid email'
+        }
+        return res.end(JSON.stringify(message));
+      }
+    //find a user from db with the email if found 
+
+    })
   } else if (url === '/register' && method === 'GET') {
     const message = {
       status: 200,
       data: '/register Get endpoint reached'
     }
+    res.end(JSON.stringify(message));
   } else {
     res.statusCode = 404;
     const notFound = {
