@@ -3,7 +3,7 @@ import http from 'http';
 import Helpers from '../config/helpers/helpers';
 import {
   User
-} from '../../config/models';
+} from '../config/models';
 import bcrypt from 'bcrypt';
 
 // import db from '../config/models/index';
