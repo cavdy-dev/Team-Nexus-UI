@@ -52,6 +52,37 @@ class authValidation {
       newData
     };
   }
+
+  /**
+   * @description Signin Validation
+   * @static
+   * @param {object} data
+   * @returns {object} validation
+   * @memberof authValidation
+   */
+  static loginValidation(data) {
+    let {
+      email, password
+    } = JSON.parse(data);
+    const errors = {};
+
+    email = spaceTrimer(email).toLowerCase();
+    password = spaceTrimer(password);
+
+    if (!validator.isEmail(email)) {
+      errors.email = 'Please put in a valid email';
+    }
+
+    if (!validator.isLength(password, { min: 7 })) {
+      errors.password = 'Password should be at least 7 characters long';
+    }
+
+    const newData = { email, password };
+    return {
+      errors,
+      newData
+    };
+  }
 }
 
 export default authValidation;
