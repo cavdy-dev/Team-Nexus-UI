@@ -6,7 +6,7 @@ import authController from './controllers/authController';
 import checkIfExist from './helpers/checkIfExist';
 
 const { registerValidation, loginValidation } = authValidation;
-const { register } = authController;
+const { register, login } = authController;
 const {
   emailExist, usernameExist, emailDontExist, comparePassword
 } = checkIfExist;
@@ -56,7 +56,12 @@ const server = http.createServer((req, res) => {
       }
 
       // Return response
-      const rest = { status: 200, data: 'successfully logged in' };
+      const response = await login(newData);
+      const rest = {
+        status: 200,
+        message: 'successfully logged in',
+        data: response
+      };
       return res.end(JSON.stringify(rest));
     });
   } else if (url === '/register' && method === 'POST') {

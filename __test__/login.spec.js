@@ -19,8 +19,10 @@ describe('Testing LOGIN', () => {
       expect(response.body).to.be.an('object');
       expect(response).to.have.status(200);
       expect(response.body).to.have.property('status');
+      expect(response.body).to.have.property('message');
       expect(response.body).to.have.property('data');
-      expect(response.body.data).to.equal('successfully logged in');
+      expect(response.body.data).to.have.property('username');
+      expect(response.body.message).to.equal('successfully logged in');
     },
   );
   it(

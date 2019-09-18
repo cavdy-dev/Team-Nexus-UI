@@ -29,6 +29,29 @@ class AuthController {
       return 'something went wrong!';
     }
   }
+
+  /**
+   * @description Auth login services
+   * @static
+   * @param {object} data
+   * @memberof AuthController
+   * @returns {object} user
+   */
+  static async login(data) {
+    try {
+      const { email } = data;
+      const user = await User.findOne({
+        where: {
+          email
+        },
+        attributes: ['username']
+      });
+
+      return user;
+    } catch (error) {
+      return 'something went wrong!';
+    }
+  }
 }
 
 export default AuthController;
