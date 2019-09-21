@@ -29,7 +29,7 @@ const server = http.createServer((req, res) => {
     /* istanbul ignore next */
     res.end(JSON.stringify(welcomeMessage));
   } else if (url === '/login') {
-    res.setHeader('Content-Type', 'application/x-www-form-urlencoded');
+    res.setHeader('Content-Type', 'application/x-www-form-urlencoded, application/json');
     let body = '';
     req.on('data', (chunk) => {
       body += chunk.toString();
@@ -69,7 +69,7 @@ const server = http.createServer((req, res) => {
       return res.end(JSON.stringify(rest));
     });
   } else if (url === '/register') {
-    res.setHeader('Content-Type', 'application/x-www-form-urlencoded');
+    res.setHeader('Content-Type', 'application/x-www-form-urlencoded, application/json');
     let body = '';
     req.on('data', (chunk) => {
       body += chunk.toString();
