@@ -8,7 +8,7 @@
     "build": "babel -d ./dist ./api -s",
     "dev": "nodemon --exec babel-node ./api/index.js",
     "pretest": "npm run undo-migrate && npm run migrate",
-    "test": "NODE_ENV=test nyc --reporter=lcov mocha --timeout 50000 ./__test__/test.spec.js --recursive --require @babel/register --exit || true",
+    "test": "nyc --reporter=lcov mocha --timeout 50000 ./__test__/test.spec.js --recursive --require @babel/register --exit || true",
     "generate-lcov": "nyc report --reporter=text-lcov > lcov.info",
     "undo-migrate": "sequelize db:migrate:undo:all",
     "migrate": "sequelize db:migrate"
