@@ -14,8 +14,12 @@ const {
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET');
+  res.setHeader('Access-Control-Max-Age', 2592000);
   res.setHeader('Content-Type', 'application/json');
-  const { url, method } = req;
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  const { url } = req;
   if (url === '/') {
     /* istanbul ignore next */
     const welcomeMessage = {
@@ -24,8 +28,8 @@ const server = http.createServer((req, res) => {
     };
     /* istanbul ignore next */
     res.end(JSON.stringify(welcomeMessage));
-  } else if (url === '/login' && method === 'POST') {
-    res.setHeader('Content-Type', 'application/json');
+  } else if (url === '/login') {
+    res.setHeader('Content-Type', 'application/x-www-form-urlencoded');
     let body = '';
     req.on('data', (chunk) => {
       body += chunk.toString();
@@ -64,8 +68,8 @@ const server = http.createServer((req, res) => {
       };
       return res.end(JSON.stringify(rest));
     });
-  } else if (url === '/register' && method === 'POST') {
-    res.setHeader('Content-Type', 'application/json');
+  } else if (url === '/register') {
+    res.setHeader('Content-Type', 'application/x-www-form-urlencoded');
     let body = '';
     req.on('data', (chunk) => {
       body += chunk.toString();
